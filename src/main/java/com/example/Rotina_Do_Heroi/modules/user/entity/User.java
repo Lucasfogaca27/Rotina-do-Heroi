@@ -2,23 +2,25 @@ package com.example.Rotina_Do_Heroi.modules.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-@Entity
-@Table(name = "users")
-@Data // Essa anotação do Lombok gera os Getters e Setters automaticamente
+//@Entity
+//@Table(name = "users")
+//@Data // Essa anotação do Lombok gera os Getters e Setters automaticamente
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    //@Column(nullable = false, unique = true)
     private String username; // HEROO27
 
-    @Column(nullable = false, unique = true)
+    //@Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    //@Column(nullable = false)
     private String password;
 
     // Gamification fields
@@ -30,4 +32,6 @@ public class User {
     private Integer strength = 0;
     private Integer intelligence = 0;
     private Integer focus = 0;
+
+
 }
