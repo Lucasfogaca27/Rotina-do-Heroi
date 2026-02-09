@@ -1,17 +1,22 @@
 package com.example.Rotina_Do_Heroi.modules.user.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+//import lombok.Data;
+//import lombok.NoArgsConstructor;
+//import lombok.AllArgsConstructor;
 
-//@Entity
-//@Table(name = "users")
+@Entity
+@Table(name = "users")
 //@Data // Essa anotação do Lombok gera os Getters e Setters automaticamente
 public class User {
 
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     //@Column(nullable = false, unique = true)
@@ -33,5 +38,15 @@ public class User {
     private Integer intelligence = 0;
     private Integer focus = 0;
 
+
+    // Dentro da classe User, remova as anotações do Lombok e adicione:
+    public int getLevel() { return level; }
+    public void setLevel(int level) { this.level = level; }
+
+    public long getCurrentXp() { return currentXp; }
+    public void setCurrentXp(long currentXp) { this.currentXp = currentXp; }
+
+    public long getNextLevelXp() { return nextLevelXp; }
+    public void setNextLevelXp(long nextLevelXp) { this.nextLevelXp = nextLevelXp; }
 
 }
