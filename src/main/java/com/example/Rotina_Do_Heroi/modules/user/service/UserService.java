@@ -11,6 +11,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    // Método para autenticar o Login
+    public boolean autenticar(String username, String password) {
+        return userRepository.findByUsername(username)
+                .map(user -> user.getPassword().equals(password))
+                .orElse(false);
+    }
+
+
     // Método para criar seu herói inicial
     public User createHero(User user) {
         // Lógica inicial para novos heróis
