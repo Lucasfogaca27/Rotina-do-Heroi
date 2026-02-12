@@ -5,23 +5,31 @@ import './App.css'
 const api = axios.create({ baseURL: 'http://localhost:8081/api' });
 
 function App() {
+  // ESTADOS QUE ESTAVAM FALTANDO
   const [hero, setHero] = useState(null)
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
-
-  // Estados para o formulário de novas quests
+  const [levelUpEffect, setLevelUpEffect] = useState(false)
   const [newTask, setNewTask] = useState({
     title: '',
-    description: '',
     xpReward: 0,
-    userId: 1 // Fixado no ID do HEROO27 por enquanto
+    userId: 1
   })
 
   const loadDashboard = async () => {
     try {
       const resHero = await api.post('/auth/login', { username: 'HEROO27', password: '123' });
       const resTasks = await api.get('/tasks/hero/1');
-      setHero(resHero.data);
+
+      const newHero = resHero.data;
+
+      // Lógica de Level Up: Compara o nível anterior com o novo
+      if (hero && newHero.level > hero.level) {
+        setLevelUpEffect(true);
+        setTimeout(() => setLevelUpEffect(false), 2000);
+      }
+
+      setHero(newHero);
       setTasks(resTasks.data);
     } catch (err) {
       console.error("Erro na aventura:", err);
@@ -58,7 +66,9 @@ function App() {
         <div className="stats">
           <span>Nível {hero?.level}</span>
           <div className="xp-bar-container">
-            <div className="xp-bar-fill" style={{ width: `${(hero?.currentXp / hero?.nextLevelXp) * 100}%` }}></div>
+            <div className={`xp-bar-fill ${levelUpEffect ? 'level-up-anim' : ''}`}
+                 style={{ width: `${(hero?.currentXp / hero?.nextLevelXp) * 100}%` }}>
+            </div>
           </div>
           <span>{hero?.currentXp} / {hero?.nextLevelXp} XP</span>
         </div>
