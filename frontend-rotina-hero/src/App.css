@@ -84,3 +84,31 @@ button {
 button:hover {
   background: #3700b3;
 }
+
+.quest-form {
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  border: 1px dashed #6200ee;
+}
+
+.quest-form form {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.quest-form input {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  outline: none;
+}
+
+.quest-form input:focus {
+  border-color: #6200ee;
+}

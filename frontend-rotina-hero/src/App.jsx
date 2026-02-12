@@ -9,15 +9,19 @@ function App() {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
 
+  // Estados para o formulário de novas quests
+  const [newTask, setNewTask] = useState({
+    title: '',
+    description: '',
+    xpReward: 0,
+    userId: 1 // Fixado no ID do HEROO27 por enquanto
+  })
+
   const loadDashboard = async () => {
     try {
-      // 1. Busca os dados do Herói (Ajuste o endpoint se necessário para retornar o objeto User completo)
       const resHero = await api.post('/auth/login', { username: 'HEROO27', password: '123' });
-
-      // 2. Busca as Tasks do HEROO27 (ID 1)
       const resTasks = await api.get('/tasks/hero/1');
-
-      setHero(resHero.data); // Se o seu login retornar o objeto User, aqui teremos level, xp, etc.
+      setHero(resHero.data);
       setTasks(resTasks.data);
     } catch (err) {
       console.error("Erro na aventura:", err);
@@ -28,9 +32,21 @@ function App() {
 
   useEffect(() => { loadDashboard(); }, []);
 
+  // Função para criar a quest
+  const handleCreateTask = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post('/tasks', newTask);
+      setNewTask({ title: '', description: '', xpReward: 0, userId: 1 }); // Limpa o form
+      loadDashboard(); // Recarrega a lista e o XP
+    } catch (err) {
+      console.error("Erro ao criar quest:", err);
+    }
+  };
+
   const completeTask = async (taskId) => {
     await api.patch(`/tasks/${taskId}/complete`);
-    loadDashboard(); // Recarrega para ver o Level Up em tempo real!
+    loadDashboard();
   };
 
   if (loading) return <div className="loading">Carregando mapa...</div>
@@ -40,22 +56,46 @@ function App() {
       <header className="hero-header">
         <h1>{hero?.username || 'HEROO27'}</h1>
         <div className="stats">
-          <span>Nível {hero?.level || 2}</span>
+          <span>Nível {hero?.level}</span>
           <div className="xp-bar-container">
             <div className="xp-bar-fill" style={{ width: `${(hero?.currentXp / hero?.nextLevelXp) * 100}%` }}></div>
           </div>
-          <span>{hero?.currentXp || 0} / {hero?.nextLevelXp || 150} XP</span>
+          <span>{hero?.currentXp} / {hero?.nextLevelXp} XP</span>
         </div>
       </header>
 
+      {/* Novo Formulário de Quests */}
+      <section className="quest-form">
+        <h2>Nova Quest</h2>
+        <form onSubmit={handleCreateTask}>
+          <input
+            type="text"
+            placeholder="Título da Missão"
+            value={newTask.title}
+            onChange={(e) => setNewTask({...newTask, title: e.target.value})}
+            required
+          />
+          <input
+            type="number"
+            placeholder="Recompensa de XP"
+            value={newTask.xpReward}
+            onChange={(e) => setNewTask({...newTask, xpReward: parseInt(e.target.value)})}
+            required
+          />
+          <button type="submit">Adicionar ao Mural</button>
+        </form>
+      </section>
+
       <main className="task-list">
-        <h2>Suas Missões Diárias</h2>
+        <h2>Mural de Missões</h2>
         {tasks.map(task => (
           <div key={task.id} className={`task-card ${task.completed ? 'done' : ''}`}>
-            <h3>{task.title}</h3>
-            <p>{task.xpReward} XP</p>
+            <div>
+              <h3>{task.title}</h3>
+              <p>{task.xpReward} XP</p>
+            </div>
             {!task.completed && (
-              <button onClick={() => completeTask(task.id)}>Finalizar Missão</button>
+              <button onClick={() => completeTask(task.id)}>Finalizar</button>
             )}
           </div>
         ))}
